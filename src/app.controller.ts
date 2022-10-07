@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -25,7 +26,7 @@ export class AppController {
 
   @Post(':id')
   postHelloId(@Param('id') id: string, @Query('role') role: string) {
-    return `Bad request with id ${id}. Role: ${role}`;
+    return `request with id ${id}. Role: ${role}`;
   }
 
   @Delete()
