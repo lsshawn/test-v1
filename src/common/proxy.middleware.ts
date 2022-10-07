@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
+import * as requestIp from 'request-ip';
 
 @Injectable()
 export class ProxyMiddleware implements NestMiddleware {
@@ -18,11 +19,12 @@ export class ProxyMiddleware implements NestMiddleware {
     response: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { ip } = request;
-    const proxyIP = this.configService.get<string>('proxyIP');
+    const ip = requestIp.getClientIp(request);
+    console.log('LS -> src/common/proxy.middleware.ts:21 -> ip: ', ip);
+    const proxyIP = this.configService.get<string>('PROXY_IP');
 
-    if (ip !== proxyIP) {
-      throw new UnauthorizedException('Access Denied');
+    if (!['::ffff:127.0.0.1', proxyIP].includes(ip)) {
+      throw new UnauthorizedException('IP Access Denied');
     }
     next();
   }

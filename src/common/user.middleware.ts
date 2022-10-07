@@ -21,9 +21,11 @@ export class UserMiddleware implements NestMiddleware {
     const userIp = request.headers['user-ip'];
     // TODO: GET user IP from database here
     const user = { ip: '198.0.0.12' };
+    const APP_ENV = this.configService.get<string>('APP_ENV');
+    const isDev = APP_ENV === 'dev';
 
-    if (userIp !== user.ip) {
-      throw new UnauthorizedException('Access Denied');
+    if (!isDev && userIp !== user.ip) {
+      throw new UnauthorizedException('User IP not whitelisted');
     }
 
     next();
