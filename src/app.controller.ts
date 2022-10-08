@@ -6,8 +6,11 @@ import {
   Param,
   Post,
   Delete,
-  NotFoundException,
+  UseInterceptors,
+  UploadedFile,
+  Body,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 
 @Controller('/user')
@@ -20,7 +23,20 @@ export class AppController {
   }
 
   @Post()
-  postHello(): string {
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: {
+        fileSize: 25 * 1024 * 1024,
+      },
+    }),
+  )
+  postHello(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() body: any,
+  ): string {
+    console.log(image);
+    console.log(body);
+
     return this.appService.postHello();
   }
 
