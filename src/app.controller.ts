@@ -35,7 +35,7 @@ export class AppController {
     @Body() body: any,
   ): string {
     console.log(image);
-    console.log(body);
+    // console.log(body);
 
     return this.appService.postHello();
   }
